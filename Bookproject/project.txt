@@ -1,0 +1,33 @@
+
+
+1. go mod init bookstore
+
+2. go get -u github.com/gin-gonic/gin
+
+3 github.com/jinzhu/gorm
+     -> Object-Relational Mapping (ORM)
+     -> we can use some inbuild function that help to write database operation
+        without writing querry
+4 github.com/jinzhu/gorm/dialects/mysql
+   -> for GORM library (Go Object Relational Mappe)
+   -> Mapping between Go structs and database tables
+ 
+5.when we using Gin not requir to use json.marshall and unmarshall  package 
+  context package it self we can acces the json that will take care marshall process.
+
+6. In Gorilla mux frame work we shound use json.marshall and unmarshall.
+
+
+GORM - Go - Object - Relational - Mapping
+
+1. We manually craete the database name 
+
+2. db.AutoMigrate(address of struct) this will help to craete the table name which is 
+   our struct name and creating the struct field as a column in database.
+
+3. db.NewRecord() Checking the this record is alredy exist or not 
+   if yes db.Create(b)  insert in to the database.
+
+4. db.Find(&struct) - select * from tables
+   
+    
