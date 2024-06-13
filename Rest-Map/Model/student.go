@@ -86,7 +86,7 @@ func (s *Reposit) Delete(id int) (Student, error) {
 
 	var dum Student
 
-	err := s.DB.Where("ID=?", id).Delete(dum).Error
+	err := s.DB.Where("ID=?", id).Delete(&dum).Error
 
 	if err != nil {
 

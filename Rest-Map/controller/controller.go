@@ -68,22 +68,42 @@ func (a *Controll) GetbyID(c *gin.Context) {
 func (a *Controll) Updatestudent(c *gin.Context) {
 
 	var students Model.Student
-
-	err := c.ShouldBind(&students)
-
+	c.ShouldBind(&students)
+	id, err := strconv.Atoi(c.Param("SID"))
 	if err != nil {
 
-		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Error while parsing"})
+		return
+
 	}
 
-	updatedstudent, err := a.Service.Update(students)
+	updatedstudent, err := a.Service.GetbyID(id)
 
 	if err != nil {
 
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 	}
 
-	c.JSON(http.StatusOK, updatedstudent)
+	if students.Name != "" {
+
+		updatedstudent.Name = students.Name
+	}
+	if students.Place != "" {
+
+		updatedstudent.Place = students.Place
+	}
+
+	if students.DOB != "" {
+
+		updatedstudent.DOB = students.DOB
+	}
+
+	if students.Contactnumber != "" {
+
+		updatedstudent.Contactnumber = students.Contactnumber
+	}
+	updatedone, _ := a.Service.Update(updatedstudent)
+	c.JSON(http.StatusOK, updatedone)
 }
 
 func (a *Controll) Delete(c *gin.Context) {
@@ -95,9 +115,11 @@ func (a *Controll) Delete(c *gin.Context) {
 		return
 	}
 
-	dell, err := a.Service.Delete(id)
+	//dellvalue, _ := a.Service.GetbyID(id)
 
-	if err != nil {
+	dell, anerror := a.Service.Delete(id)
+
+	if anerror != nil {
 
 		c.JSON(http.StatusInternalServerError, gin.H{"errr": err.Error()})
 	}
