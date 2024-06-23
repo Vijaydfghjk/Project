@@ -20,6 +20,53 @@ func Newcontroller(value model.Process) *Repo {
 	return &Repo{value: value}
 }
 
+func (r *Repo) Register(c *gin.Context) {
+
+	var user model.User
+
+	if err := c.ShouldBindJSON(&user); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	registeredUser, err := r.value.RegisterUser(user)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, registeredUser)
+}
+
+func (r *Repo) Login(c *gin.Context) {
+
+	var logindetails model.Login
+
+	if err := c.ShouldBind(&logindetails); err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := r.value.LoginUser(logindetails.Email, logindetails.Password)
+
+	if err != nil {
+
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+		return
+	}
+
+	token, err := generateJWT(int(user.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{"token": token})
+}
+
 func (r *Repo) Accountcreation(c *gin.Context) {
 
 	var temp model.Account
