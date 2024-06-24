@@ -31,6 +31,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
                //condition check 3 //  It reads the token and checks if it's valid and hasn't been tampered with
 		//Tokens are like secret messages. You need to decode (parse) them to read what's inside and verify (validate) that they're real and not fake.
+		// in auth file we created the secret key while generate the token and  that same secret key is there in the token that we are validating below.
 		
 		claims := jwt.MapClaims{}
 		token, err := jwt.ParseWithClaims(tokenParts[1], claims, func(token *jwt.Token) (interface{}, error) {
