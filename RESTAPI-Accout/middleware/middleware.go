@@ -23,6 +23,8 @@ func AuthMiddleware() gin.HandlerFunc {
 		//condition check 2 it expects the token to be in the format "Bearer <token>
 		tokenParts := strings.Split(tokenString, " ")
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
+			//tokenParts[0] == "Bearer
+			//tokenParts[1] represents the JWT token string that carries the actual authentication information.
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
 			c.Abort()
 			return
