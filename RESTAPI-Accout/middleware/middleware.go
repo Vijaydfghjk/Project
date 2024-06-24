@@ -11,6 +11,7 @@ import (
 func AuthMiddleware() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		// Get the Authorization header
+	// condition check 1 :  if the Authorization header is present in the HTTP request	
 		tokenString := c.GetHeader("Authorization")
 		if tokenString == "" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "no token provided"})
@@ -19,6 +20,7 @@ func AuthMiddleware() gin.HandlerFunc {
 		}
 
 		// Token usually comes in the format "Bearer <token>"
+		//condition check 2 t expects the token to be in the format "Bearer <token>
 		tokenParts := strings.Split(tokenString, " ")
 		if len(tokenParts) != 2 || tokenParts[0] != "Bearer" {
 			c.JSON(http.StatusUnauthorized, gin.H{"error": "invalid token format"})
