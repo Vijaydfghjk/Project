@@ -18,7 +18,7 @@ func main() {
 		log.Fatal(err.Error())
 	}
 
-	db.AutoMigrate(&Model.Student{})
+	db.AutoMigrate(&Model.Student{}, &Model.Register{})
 
 	repo := Model.NewRepository(db)
 

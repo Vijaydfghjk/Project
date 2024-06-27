@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 	"restapi/Model"
+	"restapi/middleware"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
@@ -17,6 +18,54 @@ func Mycontroll(service Model.Repository) *Controll {
 	return &Controll{Service: service}
 }
 
+func (a *Controll) NewUser(c *gin.Context) {
+
+	var temp Model.Register
+
+	err := c.ShouldBind(&temp)
+
+	if err != nil {
+
+		c.JSON(http.StatusBadRequest, gin.H{"errr": err.Error()})
+		return
+	}
+
+	newuser, err := a.Service.Createnewuser(temp)
+
+	if err != nil {
+
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	c.JSON(http.StatusOK, newuser)
+}
+func (a *Controll) Mylogin(c *gin.Context) {
+
+	var temp Model.Login
+
+	err := c.ShouldBind(&temp)
+
+	if err != nil {
+
+		c.JSON(http.StatusBadGateway, gin.H{"error": err.Error()})
+
+	}
+
+	loguser, err := a.Service.Loginuser(temp)
+
+	if err != nil {
+
+		c.JSON(http.StatusUnauthorized, gin.H{"error": err.Error()})
+	}
+
+	token, err := middleware.Generatetoken(int(loguser.ID))
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, token)
+}
 func (a *Controll) Createstudent(c *gin.Context) {
 
 	var student Model.Student
