@@ -25,16 +25,17 @@ type Student struct {
 	Place         string `json:"place"`
 	Contactnumber string `json:"contactnumber"`
 	DOB           string `json:"dob"`
+	UserID        uint   `json:"user_id"`
 }
 
 type Repository interface {
 	Createlist(student Student) (Student, error)
-	Getall() ([]Student, error)
-	GetbyID(id int) (Student, error)
-	Update(boy Student) (Student, error)
-	Delete(id int) (Student, error)
+	Getall(userID uint) ([]Student, error)
+	GetbyID(userID uint, id int) (Student, error)
+	Update(userID uint, boy Student) (Student, error)
+	Delete(userID uint, id int) (Student, error)
 	Createnewuser(Re Register) (Register, error)
-	Loginuser(Lo Login) (Register, error)
+	Loginuser(lo Login) (Register, error)
 }
 
 type Reposit struct {
@@ -60,11 +61,11 @@ func (s *Reposit) Createlist(student Student) (Student, error) {
 	return Student{}, nil
 }
 
-func (s *Reposit) Getall() ([]Student, error) {
+func (s *Reposit) Getall(userID uint) ([]Student, error) {
 
 	var person []Student
 
-	err := s.DB.Find(&person).Error
+	err := s.DB.Where("user_id = ?", userID).Find(&person).Error
 
 	if err != nil {
 
@@ -73,11 +74,11 @@ func (s *Reposit) Getall() ([]Student, error) {
 
 	return person, nil
 }
-func (s *Reposit) GetbyID(id int) (Student, error) {
+func (s *Reposit) GetbyID(userID uint, id int) (Student, error) {
 
 	var dum Student
 
-	err := s.DB.Where("ID=?", id).Find(&dum).Error
+	err := s.DB.Where("user_id = ? and id=?", userID, id).Find(&dum).Error
 
 	if err != nil {
 
@@ -87,9 +88,9 @@ func (s *Reposit) GetbyID(id int) (Student, error) {
 	return dum, nil
 }
 
-func (s *Reposit) Update(boy Student) (Student, error) {
+func (s *Reposit) Update(userID uint, boy Student) (Student, error) {
 
-	err := s.DB.Save(&boy).Error
+	err := s.DB.Where("user_id = ? and id = ?", userID, boy.ID).Save(&boy).Error
 
 	if err != nil {
 
@@ -98,11 +99,11 @@ func (s *Reposit) Update(boy Student) (Student, error) {
 	return boy, nil
 }
 
-func (s *Reposit) Delete(id int) (Student, error) {
+func (s *Reposit) Delete(userID uint, id int) (Student, error) {
 
 	var dum Student
 
-	err := s.DB.Where("ID=?", id).Delete(&dum).Error
+	err := s.DB.Where("user_id = ? and ID=?", userID, id).Delete(&dum).Error
 
 	if err != nil {
 
@@ -137,17 +138,18 @@ func (s *Reposit) Createnewuser(Re Register) (Register, error) {
 	return temp, nil
 }
 
-func (s *Reposit) Loginuser(Lo Login) (Register, error) {
+func (s *Reposit) Loginuser(lo Login) (Register, error) {
 
 	var person Register
 
-	err := s.DB.Where("email = ?", Lo.Email).Find(&person).Error
+	//temp := Login{Email: lo.Email, Password: lo.Password}
+	err := s.DB.Where("email = ?", lo.Email).Find(&person).Error
 
 	if err != nil {
 
 		return person, err
 	}
-	err = bcrypt.CompareHashAndPassword([]byte(person.Password), []byte(Lo.Password))
+	err = bcrypt.CompareHashAndPassword([]byte(person.Password), []byte(lo.Password))
 
 	if err != nil {
 

@@ -4,6 +4,7 @@ import (
 	"log"
 	"restapi/Model"
 	"restapi/controller"
+	"restapi/middleware"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/mysql"
@@ -25,12 +26,55 @@ func main() {
 	ctrl := controller.Mycontroll(repo)
 
 	r := gin.Default()
+	r.POST("/Newuser", ctrl.NewUser)
+	r.POST("/Login", ctrl.Mylogin)
 
-	r.GET("/student/", ctrl.Getstudent)
-	r.POST("/student/", ctrl.Createstudent)
-	r.GET("/student/:SID", ctrl.GetbyID)
-	r.PUT("/student/:SID", ctrl.Updatestudent)
-	r.DELETE("/student/:SID", ctrl.Delete)
+	protect := r.Group("/")
 
-	log.Fatal(r.Run("localhost:9010"))
+	protect.Use(middleware.AuthMiddleware())
+	{
+		protect.GET("/student/", ctrl.Getstudent)
+		protect.POST("/student/", ctrl.Createstudent)
+		protect.GET("/student/:SID", ctrl.GetbyID)
+		protect.PUT("/student/:SID", ctrl.Updatestudent)
+		protect.DELETE("/student/:SID", ctrl.Delete)
+	}
+	//r.Run("localhost:9010")
+	r.Run("0.0.0.0:9010")
+
 }
+
+// "email": "test@gmail.com",
+// "password": "Vijay@123"
+
+/*
+{
+ user 1.
+
+    "name" : "Check",
+    "email": "check@gmail.com",
+    "password": "check@1235"
+}
+user 2.
+
+{
+     "name": "Johan",
+    "email": "johan@gmail.com",
+    "password": "johan@123"
+}
+
+   input format
+{
+
+  "name": "check",
+  "place": "city",
+  "contactnumber": "1234567890",
+  "dob": "2000-01-01",
+  "user_id": 101
+}
+
+    "name" : "Imay",
+    "email": "imay@gmail.com",
+    "password": "Imay@123"
+
+*/

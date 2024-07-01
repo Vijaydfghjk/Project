@@ -74,6 +74,15 @@ func (a *Controll) Createstudent(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	userID, exists := c.Get("userid")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found"})
+		return
+	}
+
+	student.UserID = userID.(uint)
+
 	values, err := a.Service.Createlist(student)
 
 	if err != nil {
@@ -86,7 +95,13 @@ func (a *Controll) Createstudent(c *gin.Context) {
 
 func (a *Controll) Getstudent(c *gin.Context) {
 
-	values, err := a.Service.Getall()
+	userID, exists := c.Get("userid")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found"})
+		return
+	}
+
+	values, err := a.Service.Getall(userID.(uint))
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
@@ -104,7 +119,13 @@ func (a *Controll) GetbyID(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 	}
 
-	values, err := a.Service.GetbyID(id)
+	userID, exists := c.Get("userid")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found"})
+		return
+	}
+
+	values, err := a.Service.GetbyID(userID.(uint), id)
 
 	if err != nil {
 
@@ -125,8 +146,15 @@ func (a *Controll) Updatestudent(c *gin.Context) {
 		return
 
 	}
+	userID, exists := c.Get("userid")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found"})
+		return
+	}
+	students.ID = uint(id)
+	students.UserID = userID.(uint)
 
-	updatedstudent, err := a.Service.GetbyID(id)
+	updatedstudent, err := a.Service.GetbyID(userID.(uint), id)
 
 	if err != nil {
 
@@ -151,7 +179,7 @@ func (a *Controll) Updatestudent(c *gin.Context) {
 
 		updatedstudent.Contactnumber = students.Contactnumber
 	}
-	updatedone, _ := a.Service.Update(updatedstudent)
+	updatedone, _ := a.Service.Update(userID.(uint), updatedstudent)
 	c.JSON(http.StatusOK, updatedone)
 }
 
@@ -164,9 +192,13 @@ func (a *Controll) Delete(c *gin.Context) {
 		return
 	}
 
-	//dellvalue, _ := a.Service.GetbyID(id)
+	userID, exists := c.Get("userid")
+	if !exists {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "user ID not found"})
+		return
+	}
 
-	dell, anerror := a.Service.Delete(id)
+	dell, anerror := a.Service.Delete(userID.(uint), id)
 
 	if anerror != nil {
 
