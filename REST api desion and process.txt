@@ -1,0 +1,96 @@
+
+1. Student struct{}
+
+2.type Repository interface {
+	Createlist(student Student) (Student, error)
+	Getall() ([]Student, error)
+	GetbyID(id int) (Student, error)
+	Update(boy Student) (Student, error)
+	Delete(id int) (Student, error)
+}
+
+
+3. This interface implemented by below struct.
+
+
+type Reposit struct {
+	DB *gorm.DB
+}
+
+
+4.Creating one function.
+
+func NewRepository(db *gorm.DB) *Reposit {
+
+	return &Reposit{DB: db}
+
+}
+
+
+5. Implementing the interface methods. 
+
+func (s *Reposit) Createlist(student Student) (Student, error) {}
+
+6.each method has DB connection.
+
+ s.DB.Create(&struct object)                  **Insert***                   // inserting the new record into the table.
+ s.s.DB.Find(&struct object)                  **Printing all***                  // select * from table
+ s.DB.Where("ID=?", id).Find(&struct object)  **Filtering row***                   // Select name,place,contact number from students where  id =1;
+ s.DB.Save(&struct object)                      **updating the record***                // updating the existing recording  UPDATE boys SET name = 'John', age = 10 WHERE id = 1;
+ s.DB.Where("ID=?", id).Delete(&struct object)   **Delete the record***              // DELETE FROM table_name WHERE ID = 1;
+         
+
+
+7. controller file 
+
+    
+   type Controll struct {
+	Service Model.Repository  
+}
+
+
+Below function returning the struct 
+
+func Mycontroll(service Model.Repository) *Controll {
+
+	return &Controll{Service: service}
+}
+
+
+  based on Controll we have folling apis
+ 
+  
+  func (a *Controll) Createstudent(c *gin.Context) {}
+  func (a *Controll) Getstudent(c *gin.Context) {}
+  func (a *Controll) GetbyID(c *gin.Context) {}
+  func (a *Controll) Updatestudent(c *gin.Context) {}
+  func (a *Controll) Delete(c *gin.Context) {}
+
+
+
+in main file :
+
+     db.AutoMigrate(&Model.Student{}) for creating the table.
+
+     
+                     passing db
+     NewRepository(db *gorm.DB) *Reposit{}  // creating the struct object for Reposit struct which is implemented by interface methods.
+
+     
+            passing the created the struct(Reposit) object
+     Mycontroll(service Model.Repository) *Controll {}   // createing the struct obje for  Controll struct which is implemented by the api
+
+
+
+   id, err := strconv.Atoi(c.Param("SID")) converting string to int 
+
+8. where you will use  ShouldBind ?
+
+
+ It’s commonly used with HTTP POST,GET or PUT requests , where the data is sent in the request body.
+
+ShouldBind(& address of struct object)
+
+
+
+
