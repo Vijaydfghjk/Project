@@ -1,0 +1,21 @@
+
+
+What is Thread?
+
+Threads are sequences of instructions given to the CPU.
+
+Thread will define based on the core.
+
+for example i core 7 means it has be 8 logical cores.
+so we have 8 threads. which means 8 tasks we use at the same  example 
+one is browsing, streaming, file uploading like that.
+
+one thread can handle the multiple tasks which can switching the task concurrently.
+
+
+Multithread ?
+
+If your processor has multiple cores (for example, dual-core, quad-core, etc.), each core can handle its own thread independently.
+This means that if you have a dual-core processor, it can handle at least two threads concurrently. 
+if i have more than one core so i can achieve the multithread right 
+if i have  only one thread to achieving multithread not possible right
