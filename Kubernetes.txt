@@ -1,0 +1,25 @@
+
+
+ manage the docker
+ network 
+
+what is Kubernetes ?
+
+Kubernetes is a system for managing Docker containers.
+group of containers called pods to run applications. If any pod fails, Kubernetes will automatically create a new one to replace it. By default, the number of pods running can be configured,
+
+What are the type of Kubernetes services ?
+
+  avoid server down.
+
+
+  spinup means stop
+
+
+1.ClusterIP: Internal access only.
+
+2.NodePort: External access via <NodeIP>:<NodePort>.
+
+3.LoadBalancer: External access via a cloud provider's load balancer.
+
+
