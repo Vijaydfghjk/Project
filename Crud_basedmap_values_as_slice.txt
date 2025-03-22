@@ -1,0 +1,79 @@
+package main
+
+import "fmt"
+
+type students struct {
+	id    int
+	Name  string
+	age   string
+	place string
+}
+
+type mange struct {
+	Note map[int][]students
+}
+
+func Repo() *mange {
+
+	return &mange{Note: make(map[int][]students)}
+}
+
+func (a *mange) adding(b students) {
+
+	var temp []students
+
+	temp = append(temp, b)
+
+	a.Note[b.id] = temp
+}
+
+func (a *mange) update_one(id int, b students) {
+
+	val, check := a.Note[id]
+
+	if !check {
+
+		fmt.Printf("Given %v is not exist\n", id)
+		return
+	}
+	val[0].Name = b.Name
+	val[0].age = b.age
+	val[0].place = b.place
+
+}
+
+func (a *mange) Remove(id int) {
+
+	delete(a.Note, id)
+}
+
+func (a *mange) display() {
+
+	for _, v := range a.Note {
+
+		fmt.Println(v)
+	}
+
+	//fmt.Println(a.Note)
+}
+
+func main() {
+
+	vj := Repo()
+
+	b1 := students{id: 1, Name: "Vijay", age: "25", place: "chennai"}
+	b2 := students{id: 2, Name: "Leo", age: "30", place: "chennai"}
+	b3 := students{id: 3, Name: "Arjun", age: "28", place: "Bangalore"}
+
+	vj.adding(b1)
+	vj.adding(b2)
+	vj.adding(b3)
+
+	temp := students{Name: "Ram", age: "29", place: "chennai"}
+	vj.update_one(4, temp)
+
+	vj.display()
+
+	vj.Remove(2)
+	vj.display()
+}
