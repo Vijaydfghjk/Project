@@ -1,79 +1,126 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"sort"
+)
 
-type students struct {
-	id    int
-	Name  string
-	age   string
-	place string
+type data struct {
+	id   int
+	name string
 }
 
-type mange struct {
-	Note map[int][]students
+type roll struct {
+	store []data
 }
 
-func Repo() *mange {
+func controll() *roll {
 
-	return &mange{Note: make(map[int][]students)}
+	return &roll{store: make([]data, 0)}
 }
 
-func (a *mange) adding(b students) {
+func (a *roll) adding(b data) {
 
-	var temp []students
-
-	temp = append(temp, b)
-
-	a.Note[b.id] = temp
+	a.store = append(a.store, b)
 }
 
-func (a *mange) update_one(id int, b students) {
+func (a *roll) update(id int, b data) {
 
-	val, check := a.Note[id]
+	for i, _ := range a.store {
 
-	if !check {
+		if a.store[i].id == id {
 
-		fmt.Printf("Given %v is not exist\n", id)
-		return
-	}
-	val[0].Name = b.Name
-	val[0].age = b.age
-	val[0].place = b.place
+			a.store[i].name = b.name
 
-}
+		}
 
-func (a *mange) Remove(id int) {
-
-	delete(a.Note, id)
-}
-
-func (a *mange) display() {
-
-	for _, v := range a.Note {
-
-		fmt.Println(v)
 	}
 
-	//fmt.Println(a.Note)
+}
+
+func (a *roll) remove(id int) {
+
+	for i, _ := range a.store {
+
+		if a.store[i].id == id {
+
+			fmt.Println("check", i)
+			a.store = append(a.store[:i], a.store[i+1:]...)
+			break
+		}
+	}
+
+	fmt.Println("After removed", a.store)
+}
+
+func (a *roll) view() {
+
+	fmt.Println(a.store)
+}
+
+func (a *roll) duplicate_byid() {
+
+	sort.Slice(a.store, func(i, j int) bool {
+
+		return a.store[i].id < a.store[j].id
+	})
+	c := 1
+
+	for i := 1; i < len(a.store); i++ {
+
+		if a.store[i].id != a.store[i-1].id {
+
+			a.store[c] = a.store[i]
+			c++
+		}
+
+	}
+
+	a.store = a.store[:c]
+	fmt.Println("Viewing by unique id", a.store)
+}
+
+func (a *roll) duplicate_byname() {
+
+	temp := make(map[string]bool)
+	//values := make([]data, len(a.store))
+	values := []data{}
+	for i, v := range a.store {
+
+		if temp[a.store[i].name] == false {
+
+			temp[a.store[i].name] = true
+			//values[i] = v
+			values = append(values, v)
+		}
+
+	}
+	fmt.Println("Viewwing by only unique name ", values)
+
 }
 
 func main() {
 
-	vj := Repo()
+	vj := controll()
 
-	b1 := students{id: 1, Name: "Vijay", age: "25", place: "chennai"}
-	b2 := students{id: 2, Name: "Leo", age: "30", place: "chennai"}
-	b3 := students{id: 3, Name: "Arjun", age: "28", place: "Bangalore"}
+	t1 := data{id: 1, name: "ram"}
+	t2 := data{id: 2, name: "vino"}
+	t4 := data{id: 3, name: "joe"}
+	t5 := data{id: 2, name: "vino"}
+	t6 := data{id: 4, name: "vino"}
 
-	vj.adding(b1)
-	vj.adding(b2)
-	vj.adding(b3)
+	vj.adding(t6)
+	vj.adding(t5)
+	vj.adding(t1)
+	vj.adding(t2)
+	vj.adding(t4)
+	//vj.view()
 
-	temp := students{Name: "Ram", age: "29", place: "chennai"}
-	vj.update_one(4, temp)
-
-	vj.display()
-
-	vj.Remove(2)
-	vj.display()
+	t3 := data{id: 2, name: "vijay"}
+	vj.update(2, t3)
+	//
+	//vj.remove(3)
+	vj.duplicate_byid()
+	//vj.view()
+	vj.duplicate_byname()
 }
